@@ -1,0 +1,200 @@
+Anh Mac
+UID: 905-111-606
+CS161, Spring 2021
+
+Homework 6
+
+	1.	
+		a) P(A, A, B), P(x, y, z)
+
+		     θ = { x/A }
+		   P(A, A, B), P(A, y, z)
+
+		     θ = { y/A }
+		   P(A, A, B), P(A, A, z)
+
+		     θ = { z/B }
+		   P(A, A, B), P(A, A, B)
+			
+		   θ = { x/A, y/A, z/B }
+
+		b) Q(y, G(A, B)), Q(G(x, x), y)
+
+		     θ = { y/G(x,x) }
+		   Q(G(x,x), G(A,B)), Q(G(x,x), G(x,x))
+		   
+		   Cannot be unified.
+		
+		c) R(x,A,z), R(B,y,z)
+		
+		     θ = { x/B }
+		   R(B,A,z), R(B,y,z)
+
+		     θ = { y/A }
+		   R(B,A,z), R(B,A,z)
+
+		   θ = { x/B, y/A }
+
+		d) Older(Father(y), y), Older(Father(x), John)
+
+		     θ = { x/y }
+		   Older(Father(y), y), Older(Father(y), John)
+
+		     θ = { y/John }
+		   Older(Father(John), John), Older(Father(John), John)
+
+		   θ = { x/y, y/John } = { x/John, y/John } 
+
+		e) Knows(Father(y), y), Knows(x,x)
+
+		     θ = { Father(y)/x }
+		   Knows(Father(y), y), Knows(Father(y), Father(y))
+
+		   Cannot be unified.
+
+
+	2. 
+		1. John likes all kinds of food.
+		2. Apples are food.
+		3. Chicken is food.
+		4. Anything someone eats and isn't killed by is food.
+		5. If you are killed by something, you are not alive.
+		6. Bill eats peanuts and is still alive.
+		7. Sue eats everything Bill eats.
+
+		a) Translate sentences into formulas in first-order logic.
+
+		1. (A x)(Food(x) => Likes(John,x))
+		2. Food(Apples)
+		3. Food(Chicken)
+		4. (A x)(E y)(Eats(y,x) & ~Kills(x,y) => Food(x))
+		5. (A x)(E y)(Kills(y,x) => ~Alive(x))
+		6. Eats(Bill,Peanuts) & Alive(Bill)
+		7. (A x)(Eats(Bill,x) => Eats(Sue,x))
+
+		b) Convert the formulas into CNF.
+
+		1. (A x)(Food(x) => Likes(John,x))
+		   (A x)(~Food(x) | Likes(John,x))
+		   ~Food(x) | Likes(John,x)
+		2. Food(Apples)
+		3. Food(Chicken)
+		4. (A x)(E y)(Eats(y,x) & ~Kills(x,y) => Food(x))
+		   (A x)(E y)(~(Eats(y,x) & ~Kills(x,y)) | Food(x))
+		   (A x)(E y)(~Eats(y,x) | Kills(x,y) | Food(x))
+		   (A x)(~Eats(F(x),x) | Kills(x,F(x) | Food(x))
+		   ~Eats(F(x),x) | Kills(x,F(x)) | Food(x)
+		5. (A x)(E y)(Kills(y,x) => ~Alive(x))
+		   (A x)(E y)(~Kills(y,x) | ~Alive(x))
+		   (A x)(~Kills(F(x),x) | ~Alive(x))
+		   ~Kills(F(x),x) | ~Alive(x)
+		6. Eats(Bill,Peanuts) 
+		   Alive(Bill)
+		7. (A x)(Eats(Bill,x) => Eats(Sue,x))
+		   (A x)(~Eats(Bill,x) | Eats(Sue,x))
+		   ~Eats(Bill,x) | Eats(Sue,x)
+
+		θ = { y/F(x) }
+			
+		CNF Formulas:
+		1. ~Food(x) | Likes(John,x)
+		2. Food(Apples)
+		3. Food(Chicken)
+		4. ~Eats(y,x) | Kills(x,y) | Food(x)
+		5. ~Kills(y,x) | ~Alive(x)
+		6. Eats(Bill,Peanuts)
+		7. Alive(Bill)
+		8. ~Eats(Bill,x) | Eats(Sue,x)
+
+		c) Prove that John likes Peanuts using resolution.
+		
+		0. ~Likes(John, Peanuts)
+		10. ~Food(Peanuts) 							1,0 	θ = { x/Peanuts }
+		11. ~Eats(y,Peanuts) | Kills(Peanuts,y)  	4,10	θ = { x/Peanuts }
+		12. Kills(Peanuts, Bill)					6,11 	θ = { y/Bill }
+		13. ~Alive(Bill)							5,12	θ = { y/Peanuts, x/Bill }
+		14. Contradiction							7,13
+
+		Because there is a contradiction Δ&~α is unsatisfiable, 
+		and we proved that John likes Peanuts.
+
+		d) Use resolution to answer, "What does Sue eats?"					
+
+		6. Eats(Bill,Peanuts)
+		8. ~Eats(Bill,x) | Eats(Sue,x)
+		15. Eats(Sue, Peanuts)						6,8		θ = { x/Peanuts }
+
+		Sue eats Peanuts.
+
+		e) New sentences:
+		1. If you don't eat, you die.
+		2. If you die, you are not alive.
+		3. Bill is alive.
+
+		First-order Logic formulas:
+		1. (A x)(E y)(~Eats(y,x) => Dies(y))
+		2. (A x)(Dies(x) => ~Alive(x))
+		3. Alive(Bill)
+		
+		CNF formulas:
+		1. (A x)(~ (E y) Eats(x,y) => Dies(x))
+		   (A x)((E y)Eats(x,y) | Dies(x))
+		   (A x)(Eats(x,F(x)) | Dies(x))
+		   Eats(x,F(x)) | Dies(x)
+
+		   θ = { y/F(x) }
+		   Eats(x,y) | Dies(x)
+
+		2. (A x)(Dies(x) => ~Alive(x))
+		   (A x)(~Dies(x) | ~Alive(x))
+		   ~Dies(x) | ~Alive(x)
+		
+		3. Alive(Bill)
+
+		Use resolution to answer, "What does Sue eats?"
+		1. ~Food(x) | Likes(John,x)
+		2. Food(Apples)
+		3. Food(Chicken)
+		4. ~Eats(y,x) | Kills(x,y) | Food(x)
+		5. ~Kills(y,x) | ~Alive(x)
+		6.1. Eats(x,y) | Dies(x)
+		6.2. ~Dies(x) | ~Alive(x)
+		7. Alive(Bill)
+		8. ~Eats(Bill,x) | Eats(Sue,x)
+
+		9. ~Dies(Bill)								6.2,7	θ = { x/Bill }
+		10. Eats(Bill,y) 							6.1,9	θ = { x/Bill }
+		11. Eats(Sue,y)								8,10	θ = { x/y }
+
+		Since x does not resolve to an exact value about what Billy and Sue eat, 
+		we cannot conclude what Sue eats.
+
+	3.
+		1. The instance of Graph 1 with 3 colors is unsatisfiable.
+		2. The instance of Graph 1 with 4 colors is satisfiable. 
+		3. The two SAT instances above tell us that the minimum colors to solve 
+		the graph coloring problem of Graph 1 is 4 colors. Based on the result
+		of RSat, a possible solution is:
+		
+		-1 -2 -3 4 -5 -6 7 -8 -9 10 -11 -12 -13 -14 15 -16 17 -18 -19 -20 -21 22 -23 -24 25 -26 -27 -28 
+
+		For k=4, we have n is within range 1-7
+						 c is within range 1-4
+		variable index = (n-1)*k + c
+
+		4  = (1-1)*4 + c -> c = 4
+		7  = (2-1)*4 + c -> c = 3
+		10 = (3-1)*4 + c -> c = 2
+		15 = (4-1)*4 + c -> c = 3
+		17 = (5-1)*4 + c -> c = 1
+		22 = (6-1)*4 + c -> c = 2
+		25 = (7-1)*4 + c -> c = 1
+
+		Let 1 = Red, 2 = Blue, 3 = Green, 4 = Yellow
+		A possible coloring assignment to solve Graph 1 is:
+			Red: 5,7
+			Blue: 3,6
+			Green: 2,4
+			Yellow: 1
+
+		4. The minimum number of colors required to properly color Graph 2 is 8.
